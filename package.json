@@ -1,0 +1,30 @@
+{
+    "name": "xrepo",
+    "version": "1.0.0",
+    "description": "My stylish Nuxt.js project",
+    "author": "lamha",
+    "private": true,
+    "scripts": {
+        "dev": "nuxt",
+        "build": "nuxt build",
+        "start": "nuxt start",
+        "generate": "nuxt generate"
+    },
+    "dependencies": {
+        "@nuxtjs/axios": "^5.3.6",
+        "@nuxtjs/dotenv": "^1.4.0",
+        "@nuxtjs/pwa": "^3.0.0-0",
+        "axios": "latest",
+        "chart.js": "^2.9.3",
+        "dotenv": "latest",
+        "moment": "^2.25.3",
+        "node-sass": "^4.14.1",
+        "nuxt": "^2.0.0",
+        "sass-loader": "^8.0.2",
+        "showdown": "^1.9.1",
+        "vue": "latest",
+        "vue-clipboard2": "^0.3.1",
+        "lodash": "latest"
+    },
+    "devDependencies": {}
+}
