@@ -4,7 +4,8 @@ export default {
     mode: 'universal',
     env: {
         PRIMARY_SITE_ID: process.env.PRIMARY_SITE_ID || 'vue',
-        BASE_URL: process.env.BASE_URL || 'https://vuerepo.com'
+        BASE_URL: process.env.BASE_URL || 'https://vuerepo.com',
+        API_DOMAIN: process.env.API_DOMAIN || 'http://expo.bubblask.com'
     },
     /*
     ** Headers of the page
@@ -58,7 +59,7 @@ export default {
     ** See https://axios.nuxtjs.org/options
     */
     axios: {
-        baseURL: process.env.API_DOMAIN + '/public'
+        baseURL: (process.env.API_DOMAIN ?  process.env.API_DOMAIN : 'http://expo.bubblask.com') + '/public'
     },
     /*
     ** Build configuration

@@ -214,15 +214,17 @@
                 let title = ''
                 let main_flag = ''
                 if (this.taxonomy.flags) {
-                    if (this.taxonomy.flags.includes('repositories')) {
+                    if (this.taxonomy.flags.includes('repository')) {
                         main_flag = 'repositories'
                     } else if (this.taxonomy.flags.includes('component')) {
                         main_flag = 'component'
                     } else if (this.taxonomy.flags.includes('module')) {
                         main_flag = 'modules'
-                    } else if (this.taxonomy.flags.includes('tag')) {
-                        return `${this.taxonomy.name}`
+                    } else {
+                        return `${this.taxonomy.name} | Tag`
                     }
+                } else {
+                    return `${this.taxonomy.name} | Tag`
                 }
                 if (['best', 'newest'].includes(this.query.order_by)) {
                     title = `${this.capitalizeFirst(this.query.order_by)} ${this.taxonomy.name} ${main_flag}`

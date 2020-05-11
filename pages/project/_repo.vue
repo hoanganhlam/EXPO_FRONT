@@ -104,15 +104,15 @@
                                 <div class="widget_title">Information</div>
                                 <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
                                     <tbody>
-                                    <tr>
+                                    <tr v-if="repo.data_meta">
                                         <th>Version</th>
                                         <td>{{repo.data_meta.version}}</td>
                                     </tr>
-                                    <tr>
+                                    <tr v-if="repo.data_meta">
                                         <th>License</th>
                                         <td>{{repo.data_meta.license}}</td>
                                     </tr>
-                                    <tr>
+                                    <tr v-if="repo.data_source">
                                         <th>Unpacked Size</th>
                                         <td>{{repo.data_source.files.readmeSize}}</td>
                                     </tr>
@@ -134,29 +134,29 @@
                                 <div class="widget_title">Statistic</div>
                                 <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
                                     <tbody>
-                                    <tr>
+                                    <tr v-if="repo.data_npm">
                                         <th>Downloads</th>
                                         <td>{{getSD(repo.data_npm, 'download')}}</td>
                                     </tr>
-                                    <tr>
+                                    <tr v-if="repo.data_npm">
                                         <th>Stars</th>
                                         <td>{{getSD(repo.data_npm, 'star')}}</td>
                                     </tr>
-                                    <tr>
+                                    <tr v-if="repo.data_github">
                                         <th>Forks</th>
                                         <td>{{repo.data_github.forksCount}}</td>
                                     </tr>
-                                    <tr>
+                                    <tr v-if="repo.data_github && repo.data_github.issues">
                                         <th>Issues</th>
                                         <td>{{repo.data_github.issues.count}}</td>
                                     </tr>
-                                    <tr>
+                                    <tr v-if="repo.data_github">
                                         <th>Updated</th>
-                                        <td>_</td>
+                                        <td>{{repo.data_github.updated_at}}</td>
                                     </tr>
-                                    <tr>
+                                    <tr v-if="repo.data_github">
                                         <th>Created</th>
-                                        <td>_</td>
+                                        <td>{{repo.data_github.created_at}}</td>
                                     </tr>
                                     </tbody>
                                 </table>
