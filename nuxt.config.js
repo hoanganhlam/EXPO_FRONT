@@ -4,8 +4,8 @@ export default {
     mode: 'universal',
     env: {
         PRIMARY_SITE_ID: process.env.PRIMARY_SITE_ID || 'vue',
-        BASE_URL: process.env.BASE_URL || 'https://vuerepo.com',
-        API_DOMAIN: process.env.API_DOMAIN || 'http://expo.bubblask.com'
+        BASE_URL: process.env.BASE_URL || 'https://vuerepository.com',
+        API_DOMAIN: process.env.API_DOMAIN || 'https://expo.bubblask.com'
     },
     /*
     ** Headers of the page

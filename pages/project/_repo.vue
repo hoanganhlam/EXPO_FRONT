@@ -27,8 +27,7 @@
                     <div class="column is-8">
                         <div class="card">
                             <div class="card-content">
-                                <media-display :value="repo.medias ? repo.medias : []"
-                                               image-size="thumb_650_250"></media-display>
+                                <media-display :value="repo.medias ? repo.medias : []" image-size="thumb_640_250"/>
                             </div>
                         </div>
                         <div class="tabs is-boxed">
@@ -140,7 +139,7 @@
                                     </tr>
                                     <tr v-if="repo.data_npm">
                                         <th>Stars</th>
-                                        <td>{{getSD(repo.data_npm, 'star')}}</td>
+                                        <td>{{getSD(repo.data_github, 'star')}}</td>
                                     </tr>
                                     <tr v-if="repo.data_github">
                                         <th>Forks</th>
@@ -152,11 +151,11 @@
                                     </tr>
                                     <tr v-if="repo.data_github">
                                         <th>Updated</th>
-                                        <td>{{repo.data_github.updated_at}}</td>
+                                        <td>{{formatDate(repo.data_github.updated_at)}}</td>
                                     </tr>
                                     <tr v-if="repo.data_github">
                                         <th>Created</th>
-                                        <td>{{repo.data_github.created_at}}</td>
+                                        <td>{{formatDate(repo.data_github.created_at)}}</td>
                                     </tr>
                                     </tbody>
                                 </table>

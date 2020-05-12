@@ -217,7 +217,7 @@
                     if (this.taxonomy.flags.includes('repository')) {
                         main_flag = 'repositories'
                     } else if (this.taxonomy.flags.includes('component')) {
-                        main_flag = 'component'
+                        main_flag = 'components'
                     } else if (this.taxonomy.flags.includes('module')) {
                         main_flag = 'modules'
                     } else {
