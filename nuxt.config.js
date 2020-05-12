@@ -59,12 +59,13 @@ export default {
     ** See https://axios.nuxtjs.org/options
     */
     axios: {
-        baseURL: (process.env.API_DOMAIN ?  process.env.API_DOMAIN : 'http://expo.bubblask.com') + '/public'
+        baseURL: (process.env.API_DOMAIN ?  process.env.API_DOMAIN : 'https://expo.bubblask.com') + '/public'
     },
     /*
     ** Build configuration
     */
     build: {
+        extractCSS: true,
         /*
         ** You can extend webpack config here
         */
