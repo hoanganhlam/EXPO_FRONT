@@ -249,7 +249,6 @@
                         "ratingValue": this.repo.score.final * 10 / 2,
                         "ratingCount": this.repo.data_github.starsCount > 0 ? this.repo.data_github.starsCount : 1
                     },
-                    "review": this.repo.description,
                     "sku": this.repo.full_name,
                     "mpn": this.repo.full_name
                 }
