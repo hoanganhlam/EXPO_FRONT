@@ -1,5 +1,6 @@
 import Vue from 'vue'
 import moment from "moment";
+import { Toast, Tooltip, Skeleton } from 'buefy';
 
 Vue.mixin({
     methods: {
@@ -55,7 +56,7 @@ Vue.mixin({
             return new moment(dateStr, 'YYYY-MM-DD').format('YYYY-MM-DD')
         },
         cleanData(data, fields) {
-            let out = {}
+            let out = {};
             if (typeof fields === 'undefined') {
                 fields = Object.keys(data)
             }
@@ -73,11 +74,11 @@ Vue.mixin({
                         out[i] = data[i]
                     }
                 }
-            })
+            });
             return out
         },
         cleanFilter(data, fields) {
-            let out = {}
+            let out = {};
             if (typeof fields === 'undefined') {
                 fields = Object.keys(data)
             }
@@ -85,9 +86,9 @@ Vue.mixin({
                 if (typeof data[i] !== 'undefined') {
                     if (Array.isArray(data[i])) {
                         out[i] = data[i].map(x => {
-                            if (x.id) return x.id
-                            else if (x.value) return x.value
-                            else return x
+                            if (x.id) return x.id;
+                            else if (x.value) return x.value;
+                            else return x;
                         })
                     } else if (typeof data[i] === 'object' && data[i] !== null) {
                         if (data[i].id) {
@@ -99,7 +100,7 @@ Vue.mixin({
                         out[i] = data[i]
                     }
                 }
-            })
+            });
             return out
         },
         convertDate(date) {
@@ -156,4 +157,8 @@ Vue.mixin({
         }
     },
     computed: {}
-})
+});
+
+Vue.use(Toast);
+Vue.use(Tooltip);
+Vue.use(Skeleton);

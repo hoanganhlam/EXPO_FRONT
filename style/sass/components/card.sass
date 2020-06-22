@@ -1,6 +1,6 @@
 $card-color: $text !default
 $card-background-color: $scheme-main !default
-$card-shadow: 0 1px 5px 0px rgba(10, 10, 10, 0.1), 0 0px 0 1px rgba(10, 10, 10, 0.02) !default
+$card-shadow: none !default
 
 $card-header-background-color: transparent !default
 $card-header-color: $text-strong !default
@@ -9,7 +9,7 @@ $card-header-shadow: 0 0.125em 0.25em rgba($scheme-invert, 0.1) !default
 $card-header-weight: $weight-bold !default
 
 $card-content-background-color: transparent !default
-$card-content-padding: .75rem !default
+$card-content-padding: 1rem !default
 
 $card-footer-background-color: transparent !default
 $card-footer-border-top: 1px solid $border-light !default
@@ -23,6 +23,7 @@ $card-media-margin: $block-spacing !default
     color: $card-color
     max-width: 100%
     position: relative
+    border: 1px solid #EEEEEE
 
     &:not(:last-child)
         margin-bottom: 1rem

@@ -24,7 +24,7 @@ export default {
     /*
     ** Customize the progress-bar color
     */
-    loading: {color: '#fff'},
+    loading: {color: '#333'},
     /*
     ** Global CSS
     */
@@ -43,7 +43,11 @@ export default {
     /*
     ** Nuxt.js dev-modules
     */
-    buildModules: [],
+    buildModules: [
+        ['@nuxtjs/google-analytics', {
+            id: 'UA-170272055-1'
+        }]
+    ],
     /*
     ** Nuxt.js modules
     */
@@ -65,7 +69,7 @@ export default {
     ** Build configuration
     */
     build: {
-        extractCSS: true,
+        // extractCSS: true,
         /*
         ** You can extend webpack config here
         */

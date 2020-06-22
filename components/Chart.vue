@@ -45,7 +45,7 @@
               const ctx = this.$refs.myChart.getContext('2d');
               Chart.defaults.global.defaultColor = '#333333';
               Chart.defaults.global.defaultFontColor = '#333333';
-              Chart.defaults.global.defaultFontSize = 14
+              Chart.defaults.global.defaultFontSize = 16;
               new Chart(ctx, {
                   type: this.type,
                   data: {
@@ -59,6 +59,16 @@
                   options: {
                       responsive: true,
                       maintainAspectRatio: false,
+                      scales: {
+                          xAxes: [{
+                              type: 'time',
+                              time: {
+                                  displayFormats: {
+                                      quarter: 'MMM YYYY'
+                                  }
+                              }
+                          }]
+                      }
                   }
               });
           }

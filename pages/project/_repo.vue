@@ -1,190 +1,148 @@
 <template>
-    <div>
-        <section class="hero is-small is-dark">
-            <div class="hero-body">
+    <div class="ws">
+        <div class="sidebar">
+            <aside class="menu">
+                <div class="menu-child">
+                    <ul class="menu-list">
+                        <li>
+                            <b-tooltip label="Overview" position="is-right">
+                                <n-link :to="`/project/${repo.id}`">
+                                    <x-icon name="chart-line"></x-icon>
+                                </n-link>
+                            </b-tooltip>
+                        </li>
+                        <li>
+                            <b-tooltip label="Screenshots" position="is-right">
+                                <n-link :to="`/project/${repo.id}/screenshots`">
+                                    <x-icon name="image"></x-icon>
+                                </n-link>
+                            </b-tooltip>
+                        </li>
+                        <li>
+                            <b-tooltip label="Document" position="is-right">
+                                <n-link :to="`/project/${repo.id}/document`">
+                                    <x-icon name="note"></x-icon>
+                                </n-link>
+                            </b-tooltip>
+                        </li>
+                        <li>
+                            <b-tooltip label="Tutorials" position="is-right">
+                                <n-link :to="`/project/${repo.id}/tutorials`">
+                                    <x-icon name="board"></x-icon>
+                                </n-link>
+                            </b-tooltip>
+                        </li>
+                        <li>
+                            <b-tooltip label="Contributors" position="is-right">
+                                <n-link :to="`/project/${repo.id}/contributors`">
+                                    <x-icon name="accounts"></x-icon>
+                                </n-link>
+                            </b-tooltip>
+                        </li>
+                        <li>
+                            <b-tooltip label="Reviews" position="is-right">
+                                <n-link :to="`/project/${repo.id}/review`">
+                                    <x-icon name="review"></x-icon>
+                                </n-link>
+                            </b-tooltip>
+                        </li>
+                    </ul>
+                </div>
+            </aside>
+        </div>
+        <div class="main">
+            <div class="hero is-small is-light">
+                <div class="hero-body">
+                    <div class="container">
+                        <div class="media headline">
+                            <div class="media-left" style="width: 160px">
+                                <media-display class="is-rounded" :name="repo.name"
+                                               :value="repo.medias ? repo.medias : []" image-size="thumb_200_200"/>
+                            </div>
+                            <div class="media-content">
+                                <div>
+                                    <h1 v-if="$route.name === 'project-repo'" class="title is-1 spaceless">
+                                        {{repo.name}}</h1>
+                                    <span v-else class="title is-1 spaceless">{{repo.name}}</span>
+                                    <div class="statistic content">
+                                        <b-rate disabled :value="repo.score.final * 10 / 2"></b-rate>
+                                        <p>made by <b>{{repo.author.username}}</b></p>
+                                        <p class="subtitle">{{repo.description}}</p>
+                                    </div>
+                                    <div class="buttons links" v-if="repo.data_meta">
+                                        <a class="button is-text is-small"
+                                           v-for="f in Object.keys(repo.data_meta.links)"
+                                           :key="f"
+                                           target="_blank"
+                                           rel="nofollow"
+                                           :href="repo.data_meta.links[f]"
+                                        >
+                                            <x-icon :name="f"></x-icon>
+                                        </a>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <section class="hero is-small">
+                <div class="hero-body">
+                    <div class="container">
+                        <NuxtChild :repo="repo"></NuxtChild>
+                    </div>
+                </div>
+            </section>
+            <div class="section">
                 <div class="container">
-                    <h1 class="title is-spaced">{{repo.name}}</h1>
-                    <div class="statistic">
-                        <b-rate :value="repo.score.final * 10 / 2"></b-rate>
-                        <p>{{repo.description}}</p>
-                    </div>
-                    <div class="buttons links">
-                        <a class="button is-small" v-for="f in Object.keys(repo.data_meta.links)"
-                           :key="f"
-                           target="_blank"
-                           rel="nofollow"
-                           :href="repo.data_meta.links[f]"
-                        >
-                            <x-icon :name="f"></x-icon>
-                        </a>
-                    </div>
-                </div>
-            </div>
-        </section>
-        <section class="section">
-            <div class="container">
-                <div class="columns">
-                    <div class="column is-8">
-                        <div class="card">
-                            <div class="card-content">
-                                <media-display :value="repo.medias ? repo.medias : []" image-size="thumb_640_250"/>
-                            </div>
-                        </div>
-                        <div class="tabs is-boxed">
-                            <ul>
-                                <li v-bind:class="{'is-active': avlTab === 'overview'}">
-                                    <a @click="avlTab = 'overview'">
-                                        <span>Charts</span>
-                                    </a>
-                                </li>
-                                <li v-bind:class="{'is-active': avlTab === 'readme'}">
-                                    <a @click="avlTab = 'readme'">
-                                        <span>Read Me</span>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a>
-                                        <span>Tutorial</span>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                        <div class="overview" v-if="avlTab === 'overview'">
-                            <div class="widget_title">Weekly Downloads</div>
-                            <chart type="line" :label="repo.name" :data="downloads"/>
-                            <div class="widget_title">Stars</div>
-                            <chart type="line" :label="repo.name" :data="stars"/>
-                        </div>
-                        <div class="content" v-if="avlTab === 'readme'">
-                            <div v-html="readme"></div>
-                        </div>
-                        <h4 class="widget_title">Tag</h4>
-                        <div class="buttons" v-if="repo.taxonomies">
-                            <n-link v-for="tax in repo.taxonomies" :key="tax.id" class="button" :to="`/${tax.slug}`">
-                                {{tax.name}}
-                            </n-link>
-                        </div>
-                    </div>
-                    <div class="column">
-                        <div class="card install">
-                            <div class="card-content">
-                                <div class="widget_title">Install</div>
-                                <div class="button is-fullwidth"
-                                     v-clipboard:copy="`npm install ${repo.name}`"
-                                     v-clipboard:success="onCopyDone">
-                                    <x-icon name="copy"></x-icon>
-                                    <span>npm install {{repo.name}}</span>
-                                </div>
-                                <div class="button is-fullwidth"
-                                     v-clipboard:copy="`yarn add ${repo.name}`"
-                                     v-clipboard:success="onCopyDone">
-                                    <x-icon name="copy"></x-icon>
-                                    <span>yarn add {{repo.name}}</span>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-content">
-                                <div class="media">
-                                    <div class="media-left">
-                                        <div class="image is-48x48">
-                                            <img :src="repo.author.avatar_url || '/avatar.png'" alt="">
-                                        </div>
+                    <div class="widget">
+                        <h2 class="has-text-centered title">Related</h2>
+                        <div class="columns is-multiline">
+                            <div class="column is-3" v-for="re in related" :key="re.id">
+                                <div class="card">
+                                    <div class="card-image">
+                                        <media-display :name="re.name" :value="re.medias ? re.medias : []"
+                                                       image-size="thumb_200_200"/>
                                     </div>
-                                    <div class="media-content">
-                                        <div><b>{{repo.author.full_name || repo.author.username}}</b></div>
-                                        <small>Author</small>
+                                    <div class="card-content">
+                                        <h4 class="widget_title has-text-centered">
+                                            <nuxt-link :to="`/project/${re.id}`">{{re.name}}</nuxt-link>
+                                        </h4>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                        <div class="card statistic">
-                            <div class="card-content">
-                                <div class="widget_title">Information</div>
-                                <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-                                    <tbody>
-                                    <tr v-if="repo.data_meta">
-                                        <th>Version</th>
-                                        <td>{{repo.data_meta.version}}</td>
-                                    </tr>
-                                    <tr v-if="repo.data_meta">
-                                        <th>License</th>
-                                        <td>{{repo.data_meta.license}}</td>
-                                    </tr>
-                                    <tr v-if="repo.data_source">
-                                        <th>Unpacked Size</th>
-                                        <td>{{repo.data_source.files.readmeSize}}</td>
-                                    </tr>
-                                    <tr>
-                                        <th>Minimized Size</th>
-                                        <td>
-                                            <img
-                                                :src="`https://flat.badgen.net/bundlephobia/minzip/${repo.name}`"
-                                                alt="Minified + gzip package size for react in KB"
-                                                class="badge--in-table">
-                                        </td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                        <div class="card statistic">
-                            <div class="card-content">
-                                <div class="widget_title">Statistic</div>
-                                <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
-                                    <tbody>
-                                    <tr v-if="repo.data_npm">
-                                        <th>Downloads</th>
-                                        <td>{{getSD(repo.data_npm, 'download')}}</td>
-                                    </tr>
-                                    <tr v-if="repo.data_npm">
-                                        <th>Stars</th>
-                                        <td>{{getSD(repo.data_github, 'star')}}</td>
-                                    </tr>
-                                    <tr v-if="repo.data_github">
-                                        <th>Forks</th>
-                                        <td>{{repo.data_github.forksCount}}</td>
-                                    </tr>
-                                    <tr v-if="repo.data_github && repo.data_github.issues">
-                                        <th>Issues</th>
-                                        <td>{{repo.data_github.issues.count}}</td>
-                                    </tr>
-                                    <tr v-if="repo.data_github">
-                                        <th>Updated</th>
-                                        <td>{{formatDate(repo.data_github.updated_at)}}</td>
-                                    </tr>
-                                    <tr v-if="repo.data_github">
-                                        <th>Created</th>
-                                        <td>{{formatDate(repo.data_github.created_at)}}</td>
-                                    </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
+                    </div>
+                    <div class="tags">
+                        <n-link v-for="tax in repo.taxonomies" :to="`/${tax.slug}`" class="tag"
+                                :key="tax.id">{{tax.name}}
+                        </n-link>
                     </div>
                 </div>
             </div>
-        </section>
+            <footer class="footer">
+                <div class="container">
+                    <p><strong>Made</strong> with ❤️</p>
+                </div>
+            </footer>
+        </div>
     </div>
 </template>
 
 <script>
-    const showdown = require('showdown')
-    import getStarHistory from '../../helper/getStarHistory';
-
     export default {
         name: "Repository",
         async asyncData({$axios, params}) {
             return {
-                repo: await $axios.$get(`/repository/repositories/${params.repo}`)
+                repo: await $axios.$get(`/repository/repositories/${params.repo}`),
+                related: await $axios.$get(`/repository/repositories/${params.repo}/related`)
             }
         },
         data() {
             return {
                 readme: null,
-                avlTab: 'overview',
-                downloads: [],
-                stars: []
+                avlTab: 'overview'
             }
         },
         head() {
@@ -196,61 +154,34 @@
                 script: [{type: 'application/ld+json', json: this.structuredData}]
             }
         },
-        methods: {
-            fetchDownload() {
-                this.$axios.get(`https://api.npmjs.org/downloads/range/last-month/${this.repo.name}`).then(res => {
-                    this.downloads = res.data.downloads.map(x => {
-                        return {
-                            label: x.day,
-                            count: x.downloads
-                        }
-                    })
-                })
-            },
-            async fetchStar() {
-                const history = await getStarHistory(this.repo.full_name)
-                    .catch(err => {
-                    });
-                if (history) {
-                    let temp = history.map(x => {
-                        return {
-                            label: x.date,
-                            count: x.starNum
-                        }
-                    })
-                    this.stars = temp.splice(0, 30)
-                }
-            }
-        },
+        methods: {},
         created() {
-            this.$axios.$get(`https://raw.githubusercontent.com/${this.repo.full_name}/master/README.md`).then(res => {
-                const converter = new showdown.Converter({emoji: true})
-                this.readme = converter.makeHtml(res);
-            })
-            this.fetchStar()
-            this.fetchDownload()
         },
         computed: {
             structuredData() {
-                return {
-                    "@context": "http://schema.org",
-                    "@type": "Product",
-                    "name": this.repo.name,
-                    "description": this.repo.description,
-                    "url": `${process.env.BASE_URL}/project/${this.repo.id}`,
-                    "image": this.repo.author ? this.repo.author.avatar_url : undefined,
-                    "brand": {
-                        "@type": "Brand",
+                if (this.repo['data_github']) {
+                    return {
+                        "@context": "http://schema.org",
+                        "@type": "Product",
                         "name": this.repo.name,
-                        "logo": this.repo.author ? this.repo.author.avatar_url : undefined
-                    },
-                    "aggregateRating": {
-                        "@type": "AggregateRating",
-                        "ratingValue": this.repo.score.final * 10 / 2,
-                        "ratingCount": this.repo.data_github.starsCount > 0 ? this.repo.data_github.starsCount : 1
-                    },
-                    "sku": this.repo.full_name,
-                    "mpn": this.repo.full_name
+                        "description": this.repo.description,
+                        "url": `${process.env.BASE_URL}/project/${this.repo.id}`,
+                        "image": this.repo.author ? this.repo.author.avatar_url : undefined,
+                        "brand": {
+                            "@type": "Brand",
+                            "name": this.repo.name,
+                            "logo": this.repo.author ? this.repo.author.avatar_url : undefined
+                        },
+                        "aggregateRating": {
+                            "@type": "AggregateRating",
+                            "ratingValue": this.repo.score.final * 10 / 2,
+                            "ratingCount": this.repo.data_github.starsCount > 0 ? this.repo.data_github.starsCount : 1
+                        },
+                        "sku": this.repo.full_name,
+                        "mpn": this.repo.full_name
+                    }
+                } else {
+                    return {}
                 }
             }
         }
@@ -258,5 +189,201 @@
 </script>
 
 <style lang="scss">
+    .ws {
+        height: calc(100vh - 3.75rem - 2px);
+        position: relative;
+        display: flex;
+        flex-direction: row;
 
+        .sidebar {
+            width: 70px;
+            border-right: 1px solid #EEE;
+
+            .menu {
+                width: 100%;
+                height: 100%;
+                display: flex;
+                flex-direction: column;
+
+                .menu-child {
+                    margin-bottom: 1rem;
+
+                    &:first-child {
+                        flex: 1;
+                        border-bottom: 1px solid #EEE;
+                    }
+                }
+            }
+
+            .menu-list {
+                span {
+                    width: 100%;
+                    color: rgb(114, 112, 106);
+                }
+
+                a {
+                    width: 100%;
+                    margin-left: 0;
+                    margin-right: 0;
+                    text-align: center;
+
+                    &.is-active {
+                        background-color: unset;
+
+                        span {
+                            color: #65d260;
+                        }
+                    }
+                }
+            }
+        }
+
+        .main {
+            flex: 1;
+            overflow: auto;
+
+            &::-webkit-scrollbar {
+                display: none;
+            }
+        }
+
+        .activities {
+            .media + .media {
+                border-top: 1px solid #EEEEEE;
+                margin-top: .5rem;
+                padding-top: 1rem;
+            }
+        }
+    }
+
+    .headline {
+        .content p:not(:last-child) {
+            margin-bottom: .5rem;
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        .media-content {
+            overflow-x: unset;
+        }
+
+        .media-left {
+            max-width: 64px;
+        }
+
+        .title.is-1 {
+            font-size: 1.8rem;
+        }
+
+        .subtitle {
+            font-size: 1rem;
+        }
+    }
+
+    .nuxt-link-exact-active {
+        background: #EEEEEE;
+    }
+
+    // -- vars
+    $bg-color: #34495e;
+    $default-size: 1em;
+    $label-font-size: $default-size / 4;
+    $label-font-size-redo: $default-size * 4;
+
+    // -- mixins
+    @mixin size($width, $height) {
+        height: $height;
+        width: $width;
+    }
+
+    @mixin draw-progress($color) {
+        .pie {
+            .half-circle {
+                border-color: $color;
+            }
+        }
+    }
+
+    // -- selectors
+    .set-size {
+        font-size: 3em;
+    }
+
+    .charts-container {
+        &:after {
+            clear: both;
+            content: '';
+            display: table;
+        }
+    }
+
+    .pie-wrapper {
+        @include size($default-size, $default-size);
+        float: left;
+        position: relative;
+
+        &:nth-child(3n + 1) {
+            clear: both;
+        }
+
+        .pie {
+            @include size(100%, 100%);
+            clip: rect(0, $default-size, $default-size, $default-size / 2);
+            left: 0;
+            position: absolute;
+            top: 0;
+
+            .half-circle {
+                @include size(100%, 100%);
+                border: ($default-size / 10) solid #3498db;
+                border-radius: 50%;
+                clip: rect(0, $default-size / 2, $default-size, 0);
+                left: 0;
+                position: absolute;
+                top: 0;
+            }
+        }
+
+        .label {
+            background: $bg-color;
+            border-radius: 50%;
+            bottom: $label-font-size-redo / 10;
+            color: #ecf0f1;
+            cursor: default;
+            display: block;
+            font-size: $label-font-size;
+            left: $label-font-size-redo / 10;
+            line-height: $label-font-size-redo * .70;
+            position: absolute;
+            right: $label-font-size-redo / 10;
+            text-align: center;
+            top: $label-font-size-redo / 10;
+
+            .smaller {
+                color: #bdc3c7;
+                font-size: .45em;
+                padding-bottom: 20px;
+                vertical-align: super;
+            }
+        }
+
+        .shadow {
+            @include size(100%, 100%);
+            border: $default-size / 10 solid #bdc3c7;
+            border-radius: 50%;
+        }
+
+        &.style-2 {
+            .label {
+                background: none;
+                color: #7f8c8d;
+
+                .smaller {
+                    color: #bdc3c7;
+                }
+            }
+        }
+
+        @include draw-progress(#e67e22);
+    }
 </style>
