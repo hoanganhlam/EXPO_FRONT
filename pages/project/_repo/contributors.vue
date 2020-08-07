@@ -1,8 +1,8 @@
 <template>
     <div class="container">
-        <h1 class="title">{{repo.name}} contributors</h1>
-        <div class="columns is-multiline">
-            <div class="column is-3" v-for="c in contributors" :key="c.id">
+        <h1 class="title">{{repo.title}} contributors</h1>
+        <div v-if="repo.meta['contributors']" class="columns is-multiline">
+            <div class="column is-3" v-for="c in repo.meta['contributors']" :key="c.id">
                 <div class="card">
                     <div class="card-content">
                         <div class="media">
@@ -25,11 +25,6 @@
         name: "contributors",
         props: {
             repo: {}
-        },
-        async asyncData({$axios, params}) {
-            return {
-                contributors: await $axios.$get(`/repository/repositories/${params.repo}/contributors`)
-        }
         }
     }
 </script>

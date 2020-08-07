@@ -1,0 +1,1 @@
+exports.ids=[2],exports.modules={36:function(e,t,r){"use strict";r.r(t);var c={name:"AuthorPage"},n=r(1);var component=Object(n.a)(c,(function(){var e=this.$createElement;return(this._self._c||e)("div",[])}),[],!1,(function(e){}),"f6d6991c","532cbe1e");t.default=component.exports}};

@@ -1,27 +1,31 @@
 <template>
     <div class="wrapper">
-        <section class="hero is-dark">
+        <section class="hero" style="border-bottom: 1px solid #e1e4e8;">
             <div class="hero-body">
-                <div class="container small has-text-centered">
-                    <h1 class="title is-1 is-spaced">{{title}}</h1>
-                    <p class="subtitle">{{taxonomy.description || `All project and repository about
-                        ${taxonomy.name}`}}</p>
+                <div class="container small">
+                    <h1 class="title is-uppercase is-spaced">{{title}}</h1>
+                    <p class="subtitle">{{description}}</p>
+                    <div class="buttons">
+                        <n-link v-for="ta in taxonomyRES.results" :to="`/${ta['term'].slug}`" class="button"
+                                :key="ta.id">
+                            <x-icon name="pound"></x-icon>
+                            <span>{{ta['term'].title}}</span>
+                        </n-link>
+                    </div>
                 </div>
             </div>
         </section>
-        <section class="hero">
+        <section class="hero is-light">
             <div class="hero-body">
-                <div class="container">
+                <div class="container small">
                     <div class="field">
                         <div class="level is-mobile">
                             <div class="level-left">
-                                <div class="widget_title">{{response.count}} Results</div>
-                            </div>
-                            <div class="level-right">
                                 <div class="dropdown is-hoverable" v-bind:class="{'is-active': isActive}"
                                      @click="isActive = !isActive">
                                     <div class="dropdown-trigger">
-                                        <button class="button" aria-haspopup="true" aria-controls="dropdown-menu">
+                                        <button class="button is-text" aria-haspopup="true"
+                                                aria-controls="dropdown-menu">
                                             <x-icon name="down"></x-icon>
                                             <span>{{capitalizeFirst(query.order_by)}}</span>
                                         </button>
@@ -40,29 +44,29 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="level-right">
+                                <small>{{response.count}} Results</small>
+                            </div>
                         </div>
                     </div>
                     <div class="columns is-multiline">
-                        <div class="column is-3" v-for="(repo, i) in response.results" :key="i">
-                            <div class="card repo has-text-centered">
-                                <div class="card-image">
-                                    <media-display :value="repo.medias ? repo.medias : []" image-size="thumb_220_220"
-                                                   :name="repo.name"/>
-                                </div>
+                        <div class="column is-12" v-for="(repo, i) in response.results" :key="i">
+                            <div class="card repo">
                                 <div class="card-content">
                                     <h3 class="widget_title">
-                                        <n-link :to="`/project/${repo.id}`">{{repo.name}}</n-link>
+                                        <n-link :to="`/project/${repo.id}`">{{repo.title}}</n-link>
                                     </h3>
-                                    <div class="medal">
-                                        <small class="button is-static">
-                                            <x-icon name="star"></x-icon>
-                                            <span class="value">{{getSD(repo.data_github, 'star')}}</span>
-                                        </small>
-                                        <small class="button is-static">
-                                            <x-icon name="download"></x-icon>
-                                            <span class="value">{{getSD(repo.data_npm, 'star')}}</span>
-                                        </small>
-                                    </div>
+                                    <p>{{repo.description}}</p>
+                                </div>
+                                <div class="medal" v-if="repo.meta">
+                                    <small class="button is-small is-text">
+                                        <x-icon name="star"></x-icon>
+                                        <span class="value">{{getSD(repo.meta['data_github'], 'star')}}</span>
+                                    </small>
+                                    <small class="button is-small is-text">
+                                        <x-icon name="download"></x-icon>
+                                        <span class="value">{{getSD(repo.meta['data_npm'], 'star')}}</span>
+                                    </small>
                                 </div>
                             </div>
                         </div>
@@ -70,6 +74,7 @@
                     <b-pagination
                         :total="response.count"
                         :current.sync="query.page"
+                        size="is-small"
                         :per-page="12">
                         <b-pagination-button
                             @click.native="changePage(props.page.number, false)"
@@ -102,9 +107,6 @@
                             Next
                         </b-pagination-button>
                     </b-pagination>
-                    <div class="buttons" style="justify-content: center;">
-                        <n-link v-for="ta in taxonomyRES.results" :to="`/${ta.slug}`" class="button is-light" :key="ta.id">{{ta.name}}</n-link>
-                    </div>
                 </div>
             </div>
         </section>
@@ -117,32 +119,27 @@
 </template>
 
 <script>
-    import debounce from "lodash/debounce"
+    import debounce from "lodash/debounce";
 
     export default {
         name: 'Taxonomy',
-        async asyncData({$axios, params, query}) {
+        async asyncData({$api, params, query}) {
             query.page_size = 12;
-            if (typeof query.page === "undefined") {
-                query.page = 1
-            } else {
-                query.page = Number.parseInt(query.page)
-            }
+            query.page = query.page ? Number.parseInt(query.page) : 1;
             query.order_by = query.order_by ? query.order_by : 'best';
-            const taxonomy = await $axios.$get(`/repository/taxonomies/${params.tax ? params.tax : process.env.PRIMARY_SITE_ID}/`);
+            let tax = params.tax ? await $api['pub_taxonomy'].get(params.tax, {
+                params: {
+                    type: 'tag'
+                }
+            }) : null;
             return {
-                taxonomy,
-                response: await $axios.$get('/repository/repositories/', {
-                    params: {
-                        taxonomies: taxonomy.id,
-                        ...query
-                    }
+                taxonomy: tax,
+                response: await $api['pub_post'].list({
+                    taxonomies: tax ? tax.id : undefined,
+                    ...query
                 }),
-                taxonomyRES: await $axios.$get('/repository/taxonomies/', {
-                    params: {
-                        parent: taxonomy.id,
-                        // flag: 'function'
-                    }
+                taxonomyRES: await $api['term_taxonomy'].list({
+                    parent: tax ? tax.id : undefined,
                 }),
                 query
             }
@@ -160,53 +157,46 @@
             return {
                 title: this.title,
                 meta: [
-                    {hid: 'description', name: 'description', content: this.taxonomy.description}
+                    {
+                        hid: 'description',
+                        name: 'description',
+                        content: this.description
+                    }
                 ]
             }
         },
         computed: {
             totalPage() {
-                return Math.ceil(this.response.count / 10)
+                return Math.ceil(this.response.count / 10);
             },
             pathOder() {
-                return `?page=1&order_by`
+                return `?page=1&order_by`;
             },
             title() {
-                let title = '';
+                let title = process.env.SITE_TITLE + ' Packages';
+                if (this.taxonomy) {
+                    title = this.taxonomy['term']['title'] + ' Packages for ' + process.env.SITE_TITLE;
+                }
                 let main_flag = '';
-                if (this.taxonomy.flags) {
-                    if (this.taxonomy.flags.includes('repository')) {
-                        main_flag = 'repositories'
-                    } else if (this.taxonomy.flags.includes('component')) {
-                        main_flag = 'components'
-                    } else if (this.taxonomy.flags.includes('module')) {
-                        main_flag = 'modules'
-                    } else {
-                        return `${this.taxonomy.name} | Tag`
-                    }
-                } else {
-                    return `${this.taxonomy.name} | Tag`
-                }
                 if (['best', 'newest'].includes(this.query.order_by)) {
-                    title = `${this.capitalizeFirst(this.query.order_by)} ${this.taxonomy.name} ${main_flag}`
+                    title = `${this.capitalizeFirst(this.query.order_by)} ${title} ${main_flag}`
                 } else {
-                    title = `Top ${this.taxonomy.name} ${main_flag} by ${this.capitalizeFirst(this.query.order_by)}`
+                    title = `Top ${title} ${main_flag} by ${this.capitalizeFirst(this.query.order_by)}`
                 }
-
                 if (this.query.page > 1) {
                     title = title + ' | Page ' + this.query.page
                 }
-
-                return title
+                return title;
+            },
+            description() {
+                return this.taxonomy ? this.taxonomy['term']['description'] : process.env.SITE_DESCRIPTION
             }
         },
         methods: {
             async fetch() {
-                this.response = await this.$axios.$get('/repository/repositories/', {
-                    params: {
-                        taxonomies: this.taxonomy.id,
-                        ...this.query
-                    }
+                this.response = await this.$api.post.list({
+                    taxonomies: this.taxonomy ? this.taxonomy.id : undefined,
+                    ...this.query
                 }).then(res => {
                     const myDiv = document.getElementById('__layout');
                     myDiv.scrollTop = 0;
@@ -229,11 +219,9 @@
                 this.query.order_by = order.toLowerCase()
             },
             searchTax: debounce(function (text) {
-                this.$axios.$get('/repository/taxonomies/', {
-                    params: {
-                        parent: this.taxonomy.id,
-                        search: text.data
-                    }
+                this.$api['term_taxonomy'].list({
+                    parent: this.taxonomy.id,
+                    search: text.data
                 }).then(res => {
                     this.taxonomyRES = res
                 })

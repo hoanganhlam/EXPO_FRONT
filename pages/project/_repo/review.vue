@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <h1 class="title">{{repo.name}} review</h1>
+        <h1 class="title">{{repo.title}} review</h1>
     </div>
 </template>
 

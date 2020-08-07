@@ -51,35 +51,33 @@
             </aside>
         </div>
         <div class="main">
-            <div class="hero is-small is-light">
+            <div class="hero is-light">
                 <div class="hero-body">
                     <div class="container">
                         <div class="media headline">
                             <div class="media-left" style="width: 160px">
-                                <media-display class="is-rounded" :name="repo.name"
-                                               :value="repo.medias ? repo.medias : []" image-size="thumb_200_200"/>
+                                <media-display class="is-rounded" :name="repo.title"
+                                               :value="repo.medias ? repo.medias : []"
+                                               image-size="thumb_200_200"/>
                             </div>
                             <div class="media-content">
-                                <div>
-                                    <h1 v-if="$route.name === 'project-repo'" class="title is-1 spaceless">
-                                        {{repo.name}}</h1>
-                                    <span v-else class="title is-1 spaceless">{{repo.name}}</span>
-                                    <div class="statistic content">
-                                        <b-rate disabled :value="repo.score.final * 10 / 2"></b-rate>
-                                        <p>made by <b>{{repo.author.username}}</b></p>
-                                        <p class="subtitle">{{repo.description}}</p>
-                                    </div>
-                                    <div class="buttons links" v-if="repo.data_meta">
-                                        <a class="button is-text is-small"
-                                           v-for="f in Object.keys(repo.data_meta.links)"
-                                           :key="f"
-                                           target="_blank"
-                                           rel="nofollow"
-                                           :href="repo.data_meta.links[f]"
-                                        >
-                                            <x-icon :name="f"></x-icon>
-                                        </a>
-                                    </div>
+                                <h1 v-if="$route.name === 'project-repo'" class="title spaceless">{{repo.title}}</h1>
+                                <span v-else class="title spaceless">{{repo.title}}</span>
+                                <div class="statistic content">
+                                    <b-rate disabled :value="meta.score.final * 10 / 2"></b-rate>
+                                    <p>made by <b>{{meta.author.username}}</b></p>
+                                    <p class="subtitle">{{repo.description}}</p>
+                                </div>
+                                <div class="buttons links" v-if="meta['data_meta']">
+                                    <a class="button is-text is-small"
+                                       v-for="f in Object.keys(meta['data_meta'].links)"
+                                       :key="f"
+                                       target="_blank"
+                                       rel="nofollow"
+                                       :href="meta['data_meta'].links[f]"
+                                    >
+                                        <x-icon :name="f"></x-icon>
+                                    </a>
                                 </div>
                             </div>
 
@@ -87,45 +85,50 @@
                     </div>
                 </div>
             </div>
-            <section class="hero is-small">
+            <div class="hero is-small">
                 <div class="hero-body">
                     <div class="container">
                         <NuxtChild :repo="repo"></NuxtChild>
                     </div>
                 </div>
-            </section>
-            <div class="section">
-                <div class="container">
-                    <div class="widget">
-                        <h2 class="has-text-centered title">Related</h2>
-                        <div class="columns is-multiline">
-                            <div class="column is-3" v-for="re in related" :key="re.id">
-                                <div class="card">
-                                    <div class="card-image">
-                                        <media-display :name="re.name" :value="re.medias ? re.medias : []"
-                                                       image-size="thumb_200_200"/>
-                                    </div>
-                                    <div class="card-content">
-                                        <h4 class="widget_title has-text-centered">
-                                            <nuxt-link :to="`/project/${re.id}`">{{re.name}}</nuxt-link>
-                                        </h4>
+            </div>
+            <div class="hero is-small" v-if="related.results.length">
+                <div class="hero-body">
+                    <div class="container">
+                        <div class="widget">
+                            <h2 class="widget_title tag">Related</h2>
+                            <div class="card repo" v-for="re in related.results" :key="re.id">
+                                <div class="card-content">
+                                    <div class="media">
+                                        <div class="media-content">
+                                            <h3 class="widget_title">
+                                                <n-link :to="`/project/${re.id}`">{{re.name}}</n-link>
+                                            </h3>
+                                        </div>
+                                        <div class="media-right">
+                                            <div class="medal">
+                                                <small class="button is-small is-text">
+                                                    <x-icon name="star"></x-icon>
+                                                    <span class="value">{{getSD(meta['data_github'], 'star')}}</span>
+                                                </small>
+                                                <small class="button is-small is-text">
+                                                    <x-icon name="download"></x-icon>
+                                                    <span class="value">{{getSD(meta['data_npm'], 'star')}}</span>
+                                                </small>
+                                            </div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="tags">
-                        <n-link v-for="tax in repo.taxonomies" :to="`/${tax.slug}`" class="tag"
-                                :key="tax.id">{{tax.name}}
-                        </n-link>
+                        <div class="tags">
+                            <n-link v-for="tax in repo.taxonomies" :to="`/${tax['term']['slug']}`" class="tag"
+                                    :key="tax.id">{{tax['term'].title}}
+                            </n-link>
+                        </div>
                     </div>
                 </div>
             </div>
-            <footer class="footer">
-                <div class="container">
-                    <p><strong>Made</strong> with ❤️</p>
-                </div>
-            </footer>
         </div>
     </div>
 </template>
@@ -133,10 +136,13 @@
 <script>
     export default {
         name: "Repository",
-        async asyncData({$axios, params}) {
+        async asyncData({$api, params}) {
             return {
-                repo: await $axios.$get(`/repository/repositories/${params.repo}`),
-                related: await $axios.$get(`/repository/repositories/${params.repo}/related`)
+                repo: await $api.post.get(params.repo),
+                related: {
+                    results: [],
+                    count: 0
+                }
             }
         },
         data() {
@@ -147,7 +153,7 @@
         },
         head() {
             return {
-                title: this.repo.name + ': Docs, Tutorials and Example',
+                title: this.repo.title + ': Docs, Tutorials and Example',
                 meta: [
                     {hid: 'description', name: 'description', content: this.repo.description}
                 ],
@@ -159,30 +165,33 @@
         },
         computed: {
             structuredData() {
-                if (this.repo['data_github']) {
+                if (this.meta['data_github']) {
                     return {
                         "@context": "http://schema.org",
                         "@type": "Product",
-                        "name": this.repo.name,
+                        "name": this.repo.title,
                         "description": this.repo.description,
                         "url": `${process.env.BASE_URL}/project/${this.repo.id}`,
-                        "image": this.repo.author ? this.repo.author.avatar_url : undefined,
+                        "image": this.meta.author ? this.meta.author.avatar_url : undefined,
                         "brand": {
                             "@type": "Brand",
-                            "name": this.repo.name,
-                            "logo": this.repo.author ? this.repo.author.avatar_url : undefined
+                            "name": this.repo.title,
+                            "logo": this.meta.author ? this.meta.author['avatar_url'] : undefined
                         },
                         "aggregateRating": {
                             "@type": "AggregateRating",
-                            "ratingValue": this.repo.score.final * 10 / 2,
-                            "ratingCount": this.repo.data_github.starsCount > 0 ? this.repo.data_github.starsCount : 1
+                            "ratingValue": this.meta.score.final * 10 / 2,
+                            "ratingCount": this.meta['data_github']['starsCount'] > 0 ? this.meta['data_github']['starsCount'] : 1
                         },
-                        "sku": this.repo.full_name,
-                        "mpn": this.repo.full_name
+                        "sku": this.repo.title,
+                        "mpn": this.repo.title
                     }
                 } else {
                     return {}
                 }
+            },
+            meta() {
+                return this.repo['meta'];
             }
         }
     }

@@ -1,11 +1,13 @@
-require('dotenv').config()
+require('dotenv').config();
 
 export default {
     mode: 'universal',
     env: {
-        PRIMARY_SITE_ID: process.env.PRIMARY_SITE_ID || 'vue',
+        PRIMARY_SITE_ID: process.env.PRIMARY_SITE_ID || 1,
         BASE_URL: process.env.BASE_URL || 'https://vuerepository.com',
-        API_DOMAIN: process.env.API_DOMAIN || 'https://expo.bubblask.com'
+        API_DOMAIN: process.env.API_DOMAIN || 'https://expo.bubblask.com',
+        SITE_TITLE: process.env.SITE_TITLE || 'CMS Repository',
+        SITE_DESCRIPTION: process.env.SITE_DESCRIPTION || 'CMS Repository'
     },
     /*
     ** Headers of the page
@@ -37,6 +39,8 @@ export default {
     plugins: [
         {src: '~/plugins/component'},
         {src: '~/plugins/repository'},
+        {src: '~/plugins/axios'},
+        {src: '~/plugins/auth'},
         {src: '~/plugins/generic'},
         {src: '~/plugins/front', mode: 'client'}
     ],
@@ -57,13 +61,14 @@ export default {
         '@nuxtjs/pwa',
         // Doc: https://github.com/nuxt-community/dotenv-module
         '@nuxtjs/dotenv',
+        ['cookie-universal-nuxt', {alias: 'ck'}],
     ],
     /*
     ** Axios module configuration
     ** See https://axios.nuxtjs.org/options
     */
     axios: {
-        baseURL: (process.env.API_DOMAIN ?  process.env.API_DOMAIN : 'https://expo.bubblask.com') + '/public'
+        baseURL: process.env.API_DOMAIN
     },
     /*
     ** Build configuration
@@ -73,6 +78,19 @@ export default {
         /*
         ** You can extend webpack config here
         */
+        extractCSS: true,
+        optimization: {
+            splitChunks: {
+                cacheGroups: {
+                    styles: {
+                        name: 'styles',
+                        test: /\.(css|vue)$/,
+                        chunks: 'all',
+                        enforce: true
+                    }
+                }
+            }
+        },
         extend(config, ctx) {
         }
     }

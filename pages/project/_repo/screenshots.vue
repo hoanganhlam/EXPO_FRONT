@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <h1 class="title">{{repo.name}} screenshots</h1>
+        <h1 class="title">{{repo.title}} screenshots</h1>
     </div>
 </template>
 

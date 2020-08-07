@@ -1,5 +1,5 @@
 {
-    "name": "xrepo",
+    "name": "cms-repository",
     "version": "1.0.0",
     "description": "My stylish Nuxt.js project",
     "author": "lamha",
@@ -17,6 +17,7 @@
         "axios": "latest",
         "buefy": "^0.8.20",
         "chart.js": "^2.9.3",
+        "cookie-universal-nuxt": "^2.1.4",
         "dotenv": "latest",
         "lodash": "latest",
         "moment": "^2.25.3",
@@ -28,6 +29,7 @@
         "vue-clipboard2": "^0.3.1"
     },
     "devDependencies": {
-        "@nuxtjs/google-analytics": "^2.3.0"
+        "@nuxtjs/google-analytics": "^2.3.0",
+        "cookieparser": "^0.1.0"
     }
 }

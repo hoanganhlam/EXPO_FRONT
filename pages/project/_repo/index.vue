@@ -1,7 +1,7 @@
 <template>
     <div>
-        <div class="widget" v-if="repo.data_meta">
-            <div class="widget_title">Rate this package</div>
+        <div class="widget">
+            <div class="widget_title tag">Rating</div>
             <div class="columns">
                 <div class="column">
                     <div class="card">
@@ -11,11 +11,13 @@
                                 <div class="level-right">
                                     <div class="set-size charts-container">
                                         <div class="pie-wrapper style-2">
-                                            <span class="label">{{repo.score.detail.maintenance.toFixed(2) * 100}}<span
+                                            <span class="label">{{score.detail.maintenance.toFixed(2) * 100}}<span
                                                 class="smaller">%</span></span>
                                             <div class="pie" v-bind:style="cc('maintenance').c">
-                                                <div class="left-side half-circle" v-bind:style="cc('maintenance').l"></div>
-                                                <div class="right-side half-circle" v-bind:style="cc('maintenance').r"></div>
+                                                <div class="left-side half-circle"
+                                                     v-bind:style="cc('maintenance').l"></div>
+                                                <div class="right-side half-circle"
+                                                     v-bind:style="cc('maintenance').r"></div>
                                             </div>
                                             <div class="shadow"></div>
                                         </div>
@@ -33,11 +35,13 @@
                                 <div class="level-right">
                                     <div class="set-size charts-container">
                                         <div class="pie-wrapper progress-45 style-2">
-                                            <span class="label">{{repo.score.detail.popularity.toFixed(2) * 100}}<span
+                                            <span class="label">{{score.detail.popularity.toFixed(2) * 100}}<span
                                                 class="smaller">%</span></span>
                                             <div class="pie" v-bind:style="cc('popularity').c">
-                                                <div class="left-side half-circle" v-bind:style="cc('popularity').l"></div>
-                                                <div class="right-side half-circle" v-bind:style="cc('popularity').r"></div>
+                                                <div class="left-side half-circle"
+                                                     v-bind:style="cc('popularity').l"></div>
+                                                <div class="right-side half-circle"
+                                                     v-bind:style="cc('popularity').r"></div>
                                             </div>
                                             <div class="shadow"></div>
                                         </div>
@@ -55,11 +59,12 @@
                                 <div class="level-right">
                                     <div class="set-size charts-container">
                                         <div class="pie-wrapper progress-45 style-2">
-                                            <span class="label">{{repo.score.detail.quality.toFixed(2) * 100}}<span
+                                            <span class="label">{{score.detail.quality.toFixed(2) * 100}}<span
                                                 class="smaller">%</span></span>
                                             <div class="pie" v-bind:style="cc('quality').c">
                                                 <div class="left-side half-circle" v-bind:style="cc('quality').l"></div>
-                                                <div class="right-side half-circle" v-bind:style="cc('quality').r"></div>
+                                                <div class="right-side half-circle"
+                                                     v-bind:style="cc('quality').r"></div>
                                             </div>
                                             <div class="shadow"></div>
                                         </div>
@@ -74,50 +79,41 @@
         <div class="widget">
             <div class="columns">
                 <div class="column is-8">
-                    <h2 class="widget_title">Weekly Downloads</h2>
-                    <chart type="line" :label="repo.name" :data="downloads"/>
+                    <h2 class="widget_title tag">Weekly Downloads</h2>
+                    <chart type="line" :label="repo.title" :data="downloads"/>
                 </div>
                 <div class="column">
                     <div class="statistic">
-                        <div class="widget_title">Information</div>
+                        <div class="widget_title tag">Information</div>
                         <table class="table is-bordered is-striped is-narrow is-hoverable is-fullwidth">
                             <tbody>
-                            <tr v-if="repo['data_npm']">
+                            <tr v-if="data_npm">
                                 <th>Downloads</th>
-                                <td>{{getSD(repo['data_npm'], 'download')}}</td>
+                                <td>{{getSD(data_npm, 'download')}}</td>
                             </tr>
-                            <tr v-if="repo['data_npm']">
+                            <tr v-if="data_npm">
                                 <th>Stars</th>
-                                <td>{{getSD(repo['data_github'], 'star')}}</td>
+                                <td>{{getSD(data_github, 'star')}}</td>
                             </tr>
-                            <tr v-if="repo['data_github'] && repo['data_github'].issues">
+                            <tr v-if="data_github && data_github.issues">
                                 <th>Issues</th>
-                                <td>{{repo['data_github'].issues.count}}</td>
+                                <td>{{data_github.issues.count}}</td>
                             </tr>
-                            <tr v-if="repo.data_meta">
+                            <tr v-if="data_meta">
                                 <th>Version</th>
-                                <td>{{repo['data_meta'].version}}</td>
+                                <td>{{data_meta.version}}</td>
                             </tr>
-                            <tr v-if="repo['data_meta']">
+                            <tr v-if="data_meta">
                                 <th>License</th>
-                                <td>{{repo['data_meta']['license']}}</td>
+                                <td>{{data_meta['license']}}</td>
                             </tr>
-                            <tr v-if="repo['data_github']">
+                            <tr v-if="data_github">
                                 <th>Updated</th>
-                                <td>{{formatDate(repo['data_github']['updated_at'])}}</td>
+                                <td>{{formatDate(data_github['updated_at'])}}</td>
                             </tr>
-                            <tr v-if="repo['data_github']">
+                            <tr v-if="data_github">
                                 <th>Created</th>
-                                <td>{{formatDate(repo['data_github']['created_at'])}}</td>
-                            </tr>
-                            <tr>
-                                <th>Minimized Size</th>
-                                <td>
-                                    <img
-                                        :src="`https://flat.badgen.net/bundlephobia/minzip/${repo.name}`"
-                                        alt="Minified + gzip package size for react in KB"
-                                        class="badge--in-table">
-                                </td>
+                                <td>{{formatDate(data_github['created_at'])}}</td>
                             </tr>
                             </tbody>
                         </table>
@@ -125,10 +121,10 @@
                 </div>
             </div>
         </div>
-        <div class="widget" v-if="repo['data_meta'] && repo['data_meta']['dependencies']">
-            <div class="widget_title">Dependencies</div>
+        <div class="widget" v-if="data_meta && data_meta['dependencies']">
+            <div class="widget_title tag">Dependencies</div>
             <div class="columns is-multiline">
-                <div class="column is-4" v-for="(value, key) in repo['data_meta']['dependencies']" :key="key">
+                <div class="column is-4" v-for="(value, key) in data_meta['dependencies']" :key="key">
                     <div class="card">
                         <div class="card-content">
                             <div class="media">
@@ -149,7 +145,7 @@
     import getStarHistory from '../../../helper/getStarHistory';
 
     export default {
-        name: "index",
+        name: "ProjectOverview",
         props: {
             repo: {}
         },
@@ -161,7 +157,7 @@
         },
         methods: {
             cc(flag) {
-                let process = this.repo.score.detail[flag].toFixed(2) * 100;
+                let process = this.score.detail[flag].toFixed(2) * 100;
                 let c = {}, r = {}, l = {
                     'transform': `rotate(${process * 3.6}deg)`
                 };
@@ -176,7 +172,7 @@
                 }
             },
             fetchDownload() {
-                this.$axios.get(`https://api.npmjs.org/downloads/range/last-month/${this.repo.name}`).then(res => {
+                this.$axios.get(`https://api.npmjs.org/downloads/range/last-month/${this.repo.title}`).then(res => {
                     let data = res.data.downloads.map(x => {
                         return {
                             label: x.day,
@@ -187,23 +183,39 @@
                 })
             },
             async fetchStar() {
-                const history = await getStarHistory(this.repo.full_name)
-                    .catch(err => {
-                    });
-                if (history) {
-                    let temp = history.map(x => {
-                        return {
-                            label: x.date,
-                            count: x.starNum
-                        }
-                    });
-                    this.stars = temp.splice(temp.length - 15, temp.length);
+                if (this.repo.meta.full_name) {
+                    const history = await getStarHistory(`${this.repo.meta.full_name}`, null)
+                        .catch(err => {
+                        });
+                    if (history) {
+                        let temp = history.map(x => {
+                            return {
+                                label: x.date,
+                                count: x.starNum
+                            }
+                        });
+                        this.stars = temp.splice(temp.length - 15, temp.length);
+                    }
                 }
             },
         },
         async created() {
             await this.fetchStar();
             await this.fetchDownload();
+        },
+        computed: {
+            data_meta() {
+                return this.repo.meta['data_meta']
+            },
+            data_npm() {
+                return this.repo.meta['data_npm']
+            },
+            data_github() {
+                return this.repo.meta['data_github']
+            },
+            score() {
+                return this.repo.meta['score']
+            }
         }
     }
 </script>

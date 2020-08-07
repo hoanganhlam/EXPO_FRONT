@@ -29,7 +29,7 @@
                     </div>
                     <div class="navbar-end">
                         <div class="navbar-item">
-                            <span class="button is-static">About</span>
+                            <span class="button is-text">About</span>
                         </div>
                     </div>
                 </div>
