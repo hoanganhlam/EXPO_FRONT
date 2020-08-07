@@ -64,7 +64,7 @@
                                 <h1 v-if="$route.name === 'project-repo'" class="title spaceless">{{repo.title}}</h1>
                                 <span v-else class="title spaceless">{{repo.title}}</span>
                                 <div class="statistic content">
-                                    <b-rate disabled :value="meta.score.final * 10 / 2"></b-rate>
+                                    <b-rate v-if="meta.score" disabled :value="meta.score.final * 10 / 2"></b-rate>
                                     <p>made by <b>{{meta.author.username}}</b></p>
                                     <p class="subtitle">{{repo.description}}</p>
                                 </div>
@@ -191,7 +191,7 @@
                 }
             },
             meta() {
-                return this.repo['meta'];
+                return this.repo['meta'] ? this.repo['meta'] : {};
             }
         }
     }

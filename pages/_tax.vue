@@ -127,6 +127,7 @@
             query.page_size = 12;
             query.page = query.page ? Number.parseInt(query.page) : 1;
             query.order_by = query.order_by ? query.order_by : 'best';
+            query.publications = process.env.PUBLICATION;
             let tax = params.tax ? await $api['pub_taxonomy'].get(params.tax, {
                 params: {
                     type: 'tag'
@@ -138,8 +139,8 @@
                     taxonomies: tax ? tax.id : undefined,
                     ...query
                 }),
-                taxonomyRES: await $api['term_taxonomy'].list({
-                    parent: tax ? tax.id : undefined,
+                taxonomyRES: await $api['pub_taxonomy'].list({
+                    publications: process.env.PUBLICATION
                 }),
                 query
             }
@@ -194,7 +195,7 @@
         },
         methods: {
             async fetch() {
-                this.response = await this.$api.post.list({
+                this.response = await this.$api['pub_post'].list({
                     taxonomies: this.taxonomy ? this.taxonomy.id : undefined,
                     ...this.query
                 }).then(res => {
