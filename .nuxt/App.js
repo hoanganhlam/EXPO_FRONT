@@ -10,6 +10,8 @@ import {
 
 import NuxtLoading from './components/nuxt-loading.vue'
 
+import '../node_modules/@mdi/font/css/materialdesignicons.css'
+
 import '../style/app.sass'
 
 import _6f6c098b from '../layouts/default.vue'

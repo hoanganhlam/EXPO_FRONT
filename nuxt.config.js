@@ -3,6 +3,7 @@ require('dotenv').config();
 export default {
     mode: 'universal',
     env: {
+        PUBLICATION: process.env.PUBLICATION || 1,
         PRIMARY_SITE_ID: process.env.PRIMARY_SITE_ID || 1,
         BASE_URL: process.env.BASE_URL || 'https://vuerepository.com',
         API_DOMAIN: process.env.API_DOMAIN || 'https://expo.bubblask.com',
@@ -31,6 +32,7 @@ export default {
     ** Global CSS
     */
     css: [
+        '@mdi/font/css/materialdesignicons.css',
         '@/style/app.sass',
     ],
     /*

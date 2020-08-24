@@ -150,7 +150,7 @@ export async function setContext (app, context) {
       payload: context.payload,
       error: context.error,
       base: '/',
-      env: {"PRIMARY_SITE_ID":"vue","BASE_URL":"http://localhost:3000","API_DOMAIN":"https://cms.fournalist.com/v1","SITE_TITLE":"VueJS","SITE_DESCRIPTION":"aaa","PUBLICATION":"1"}
+      env: {"PUBLICATION":"1","PRIMARY_SITE_ID":"vue","BASE_URL":"http://localhost:3000","API_DOMAIN":"https://cms.fournalist.com/v1","SITE_TITLE":"VueJS","SITE_DESCRIPTION":"aaa"}
     }
     // Only set once
     if (context.req) {
