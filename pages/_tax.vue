@@ -2,112 +2,128 @@
     <div class="wrapper">
         <section class="hero" style="border-bottom: 1px solid #e1e4e8;">
             <div class="hero-body">
-                <div class="container small">
-                    <h1 class="title is-uppercase is-spaced">{{ title }}</h1>
-                    <p class="subtitle">{{ description }}</p>
+                <div class="container">
+                    <div class="media" style="margin-bottom: 1.5rem">
+                        <div class="media-left">
+                            <div class="image is-96x96">
+                                <img src="/logo.png" alt="Logo">
+                            </div>
+                        </div>
+                        <div class="media-content">
+                            <h1 class="title is-uppercase is-spaced">{{ title }}</h1>
+                            <p class="subtitle">{{ description }}</p>
+                        </div>
+                    </div>
+                    <div class="field has-addons">
+                        <div class="control">
+                            <span class="button">
+                                <x-icon name="search"></x-icon>
+                            </span>
+                        </div>
+                        <div class="control">
+                            <input class="input" type="text" placeholder="Find a repository"/>
+                        </div>
+                    </div>
                     <div class="buttons">
                         <n-link v-for="ta in taxonomyRES.results" :to="`/${ta['term'].slug}`" class="button"
                                 :key="ta.id">
-                            <x-icon name="pound"></x-icon>
+                            <x-icon class="is-small" name="pound"></x-icon>
                             <span>{{ ta['term'].title }}</span>
                         </n-link>
                     </div>
                 </div>
             </div>
         </section>
-        <section class="hero is-light">
-            <div class="hero-body">
-                <div class="container small">
-                    <div class="field">
-                        <div class="level is-mobile">
-                            <div class="level-left">
-                                <div class="dropdown is-hoverable" v-bind:class="{'is-active': isActive}"
-                                     @click="isActive = !isActive">
-                                    <div class="dropdown-trigger">
-                                        <button class="button is-text" aria-haspopup="true"
-                                                aria-controls="dropdown-menu">
-                                            <x-icon name="down"></x-icon>
-                                            <span>{{ capitalizeFirst(query.order_by) }}</span>
-                                        </button>
-                                    </div>
-                                    <div class="dropdown-menu" id="dropdown-menu" role="menu">
-                                        <div class="dropdown-content">
-                                            <n-link
-                                                v-for="i in orders" :key="i"
-                                                @click.native="selectOrder(i)"
-                                                :to="`${pathOder}=${i.toLowerCase()}`"
-                                                class="dropdown-item"
-                                                v-bind:class="{'is-active': i.toLowerCase() === query.order_by}"
-                                            >{{ i }}
-                                            </n-link>
-                                        </div>
+        <section class="section is-light">
+            <div class="container">
+                <div class="field">
+                    <div class="level is-mobile">
+                        <div class="level-left">
+                            <div class="dropdown is-hoverable" v-bind:class="{'is-active': isActive}"
+                                 @click="isActive = !isActive">
+                                <div class="dropdown-trigger">
+                                    <button class="button is-text" aria-haspopup="true"
+                                            aria-controls="dropdown-menu">
+                                        <x-icon name="down"></x-icon>
+                                        <span>{{ capitalizeFirst(query.order_by) }}</span>
+                                    </button>
+                                </div>
+                                <div class="dropdown-menu" id="dropdown-menu" role="menu">
+                                    <div class="dropdown-content">
+                                        <n-link
+                                            v-for="i in orders" :key="i"
+                                            @click.native="selectOrder(i)"
+                                            :to="`${pathOder}=${i.toLowerCase()}`"
+                                            class="dropdown-item"
+                                            v-bind:class="{'is-active': i.toLowerCase() === query.order_by}"
+                                        >{{ i }}
+                                        </n-link>
                                     </div>
                                 </div>
                             </div>
-                            <div class="level-right">
-                                <small>{{ response.count }} Results</small>
-                            </div>
+                        </div>
+                        <div class="level-right">
+                            <small>{{ response.count }} Results</small>
                         </div>
                     </div>
-                    <div class="columns is-multiline">
-                        <div class="column is-12" v-for="(repo, i) in response.results" :key="i">
-                            <div class="card repo">
-                                <div class="card-content">
-                                    <h3 class="widget_title">
-                                        <n-link :to="`/project/${repo.id}`">{{ repo.title }}</n-link>
-                                    </h3>
-                                    <p>{{ repo.description }}</p>
-                                </div>
-                                <div class="medal" v-if="repo.meta">
-                                    <small class="button is-small is-text">
-                                        <x-icon name="star"></x-icon>
-                                        <span class="value">{{ getSD(repo.meta['data_github'], 'star') }}</span>
-                                    </small>
-                                    <small class="button is-small is-text">
-                                        <x-icon name="download"></x-icon>
-                                        <span class="value">{{ getSD(repo.meta['data_npm'], 'star') }}</span>
-                                    </small>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <b-pagination
-                        :total="response.count"
-                        :current.sync="query.page"
-                        size="is-small"
-                        :per-page="12">
-                        <b-pagination-button
-                            @click.native="changePage(props.page.number, false)"
-                            slot-scope="props"
-                            :page="props.page"
-                            :id="`page-${props.page.number}`"
-                            tag="nuxt-link"
-                            :href="pathPage(props.page.number)"
-                            :to="pathPage(props.page.number)">
-                            {{ props.page.number }}
-                        </b-pagination-button>
-                        <b-pagination-button
-                            @click.native="changePage(props.page.number, false)"
-                            slot="previous"
-                            slot-scope="props"
-                            :page="props.page"
-                            :tag="props.page.number > 0 ? 'nuxt-link' : 'a'"
-                            :href="pathPage(props.page.number)"
-                            :to="pathPage(props.page.number)">
-                            Previous
-                        </b-pagination-button>
-                        <b-pagination-button
-                            @click.native="changePage(props.page.number, true)"
-                            slot="next"
-                            slot-scope="props"
-                            :page="props.page"
-                            :tag="props.page.number < totalPage ? 'nuxt-link' : 'a'"
-                            :href="pathPage(props.page.number)"
-                            :to="pathPage(props.page.number)">
-                            Next
-                        </b-pagination-button>
-                    </b-pagination>
                 </div>
+                <div class="columns is-variable is-2 is-multiline">
+                    <div class="column is-6" v-for="(repo, i) in response.results" :key="i">
+                        <div class="card repo">
+                            <div class="card-content">
+                                <h3 class="widget_title">
+                                    <n-link :to="`/project/${repo.id}`">{{ repo.title }}</n-link>
+                                </h3>
+                                <p>{{ repo.description }}</p>
+                            </div>
+                            <div class="medal" v-if="repo.meta">
+                                <small class="button is-small is-text">
+                                    <x-icon name="star"></x-icon>
+                                    <span class="value">{{ getSD(repo.meta['data_github'], 'star') }}</span>
+                                </small>
+                                <small class="button is-small is-text">
+                                    <x-icon name="download"></x-icon>
+                                    <span class="value">{{ getSD(repo.meta['data_npm'], 'star') }}</span>
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <b-pagination
+                    :total="response.count"
+                    :current.sync="query.page"
+                    :per-page="12">
+                    <b-pagination-button
+                        @click.native="changePage(props.page.number, false)"
+                        slot-scope="props"
+                        :page="props.page"
+                        :id="`page-${props.page.number}`"
+                        tag="nuxt-link"
+                        :href="pathPage(props.page.number)"
+                        :to="pathPage(props.page.number)">
+                        {{ props.page.number }}
+                    </b-pagination-button>
+                    <b-pagination-button
+                        @click.native="changePage(props.page.number, false)"
+                        slot="previous"
+                        slot-scope="props"
+                        :page="props.page"
+                        :tag="props.page.number > 0 ? 'nuxt-link' : 'a'"
+                        :href="pathPage(props.page.number)"
+                        :to="pathPage(props.page.number)">
+                        Previous
+                    </b-pagination-button>
+                    <b-pagination-button
+                        @click.native="changePage(props.page.number, true)"
+                        slot="next"
+                        slot-scope="props"
+                        :page="props.page"
+                        :tag="props.page.number < totalPage ? 'nuxt-link' : 'a'"
+                        :href="pathPage(props.page.number)"
+                        :to="pathPage(props.page.number)">
+                        Next
+                    </b-pagination-button>
+                </b-pagination>
             </div>
         </section>
         <footer class="footer">

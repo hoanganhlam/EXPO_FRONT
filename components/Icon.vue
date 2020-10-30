@@ -46,5 +46,12 @@
                 height: 1.5rem;
             }
         }
+
+        &.is-small {
+            svg {
+                width: .75rem;
+                height: .75rem;
+            }
+        }
     }
 </style>
